@@ -1,0 +1,44 @@
+{
+  "name": "text-truncation",
+  "version": "1.0.0",
+  "description": "Truncates the text of multiple elements based on the height of their container",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mgrsskls/text-truncation.git"
+  },
+  "keywords": [
+    "truncation",
+    "truncate",
+    "esm"
+  ],
+  "author": "Michael Großklaus <mail@mgrossklaus.de> (https://www.mgrossklaus.de)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mgrsskls/text-truncation/issues"
+  },
+  "homepage": "https://github.com/mgrsskls/text-truncation#readme",
+  "files": [
+    "dist/"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "del": "^5.1.0",
+    "eslint": "^6.2.2",
+    "eslint-config-prettier": "^6.1.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-rename": "^1.4.0",
+    "jest": "^24.9.0",
+    "prettier": "^1.18.2",
+    "rollup": "^1.20.3",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.1.1"
+  },
+  "dependencies": {}
+}
