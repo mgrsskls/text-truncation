@@ -180,7 +180,7 @@ class TextTruncation {
         if (nodeValue && nodeValue.length > sliceLength) {
           range.startContainer.nodeValue = `${nodeValue.slice(
             0,
-            nodeValue.length - sliceLength - 2
+            nodeValue.length - sliceLength - 4
           )}${this.options.appendix}`;
           // otherwise truncate the next element
         } else {
