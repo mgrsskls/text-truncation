@@ -1,1 +1,196 @@
-var TextTruncation=function(){"use strict";class e{constructor(t,n={}){this.options=Object.assign({},{appendix:"…",className:null},n),this.element=t,this.originalHtml=this.element.innerHTML,this.containerEdge=e.getContainerEdge(this.element),this.truncateElements=this.getTruncateElements(this.element),this.truncateElements[0].getBoundingClientRect().bottom>this.containerEdge&&(this.currentElementWidth=this.element.offsetWidth,this.truncateElement()),this.addWindowResizeListener()}static selectText(e,t,n){e.setStart(t,n-1),e.setEnd(t,n)}static deleteNode(e,t){e.selectNode(t),e.deleteContents()}static getContainerEdge(e){return e.getBoundingClientRect().bottom}static getTextNodesTree(e){return document.createTreeWalker(e,NodeFilter.SHOW_TEXT,null,!1)}static getElementNodesTree(e){return document.createTreeWalker(e,NodeFilter.SHOW_ELEMENT,null,!1)}static cleanUp(t){const n=e.getElementNodesTree(t),i=[];let s;for(;s=n.nextNode();)0===s.textContent.length&&i.push(s);i.forEach(e=>e.remove())}getTruncateElements(e){let t;return t=this.options.className?e.querySelectorAll(`.${this.options.className}`):e.children,Array.from(t).reverse()}addWindowResizeListener(){window.addEventListener("resize",this.onWindowResize.bind(this))}onWindowResize(){clearTimeout(this.resizeTimeout),this.resizeTimeout=setTimeout(()=>{clearTimeout(this.resizeTimeout);const t=this.element.offsetWidth;t!==this.currentElementWidth&&(t>this.currentElementWidth&&(this.element.innerHTML=this.originalHtml,this.truncateElements=this.getTruncateElements(this.element)),this.containerEdge=e.getContainerEdge(this.element),this.truncateElement(),this.currentElementWidth=this.element.offsetWidth)},100)}truncateElement(){(function t(n){const i=this.truncateElements[n],{top:s,bottom:l}=i.getBoundingClientRect();if(s>this.containerEdge)i.remove(),this.truncateElements.shift(),t.call(this,n);else if(l>this.containerEdge){const s=document.createRange(),l=e.getTextNodesTree(i),o=[];let r,c;for(;c=l.nextNode();)o.push(c);(function t(n){const i=o[n],l=i.length;r=0,e.selectText(s,i,l);const c=s.getClientRects();if(0===c.length)e.deleteNode(s,i),n>0&&t.call(this,n-1);else if(c[0]&&this.containerEdge<c[0].bottom){let o=l-r;for(;s.getClientRects().length&&s.getClientRects()[0].bottom>this.containerEdge&&s.endOffset>0||0===s.getClientRects().length&&o>0;)0===(o=l-r)||1===o&&0===i.nodeValue.indexOf(" ")?(e.deleteNode(s,i),n>0&&t.call(this,n-1)):(e.selectText(s,i,o),r++)}}).bind(this)(o.length-1);const{nodeValue:a}=s.startContainer;a&&a.length>r?s.startContainer.nodeValue=`${a.slice(0,a.length-r-2)}${this.options.appendix}`:t.call(this,n+1)}e.cleanUp(i)}).bind(this)(0)}}return e}();
+class TextTruncation {
+  constructor(element, opts = {}) {
+    const defaultOptions = {
+      appendix: "…",
+      className: null
+    };
+
+    this.options = Object.assign({}, defaultOptions, opts);
+    this.element = element;
+    this.originalHtml = this.element.innerHTML;
+    this.containerEdge = TextTruncation.getContainerEdge(this.element);
+    this.truncateElements = this.getTruncateElements(this.element);
+
+    if (
+      this.truncateElements[0].getBoundingClientRect().bottom >
+      this.containerEdge
+    ) {
+      this.currentElementWidth = this.element.offsetWidth;
+      this.truncateElement();
+    }
+
+    this.addWindowResizeListener();
+  }
+
+  static selectText(range, node, strEnd) {
+    range.setStart(node, strEnd - 1);
+    range.setEnd(node, strEnd);
+  }
+
+  static deleteNode(range, node) {
+    range.selectNode(node);
+    range.deleteContents();
+  }
+
+  static getContainerEdge(container) {
+    return container.getBoundingClientRect().bottom;
+  }
+
+  static getTextNodesTree(elem) {
+    return document.createTreeWalker(elem, NodeFilter.SHOW_TEXT, null, false);
+  }
+
+  static getElementNodesTree(elem) {
+    return document.createTreeWalker(
+      elem,
+      NodeFilter.SHOW_ELEMENT,
+      null,
+      false
+    );
+  }
+
+  static cleanUp(elem) {
+    const elementNodes = TextTruncation.getElementNodesTree(elem);
+    const elementNodesArr = [];
+    let node;
+
+    while ((node = elementNodes.nextNode())) {
+      if (node.textContent.length === 0) {
+        elementNodesArr.push(node);
+      }
+    }
+
+    elementNodesArr.forEach(node => node.remove());
+  }
+
+  getTruncateElements(container) {
+    let elements;
+
+    if (this.options.className) {
+      elements = container.querySelectorAll(`.${this.options.className}`);
+    } else {
+      elements = container.children;
+    }
+
+    return Array.from(elements).reverse();
+  }
+
+  addWindowResizeListener() {
+    window.addEventListener("resize", this.onWindowResize.bind(this));
+  }
+
+  onWindowResize() {
+    clearTimeout(this.resizeTimeout);
+
+    this.resizeTimeout = setTimeout(() => {
+      clearTimeout(this.resizeTimeout);
+
+      const width = this.element.offsetWidth;
+
+      if (width !== this.currentElementWidth) {
+        if (width > this.currentElementWidth) {
+          this.element.innerHTML = this.originalHtml;
+          this.truncateElements = this.getTruncateElements(this.element);
+        }
+
+        this.containerEdge = TextTruncation.getContainerEdge(this.element);
+        this.truncateElement();
+
+        this.currentElementWidth = this.element.offsetWidth;
+      }
+    }, 100);
+  }
+
+  truncateElement() {
+    (function iterate(elementsIndex) {
+      const elem = this.truncateElements[elementsIndex];
+      const { top, bottom } = elem.getBoundingClientRect();
+
+      // if the top of the current element is beneath the container edge
+      // remove the element because it is not visible anyway
+      if (top > this.containerEdge) {
+        elem.remove();
+        this.truncateElements.shift();
+        iterate.call(this, elementsIndex);
+        // if the text goes below the container edge
+      } else if (bottom > this.containerEdge) {
+        const range = document.createRange();
+        const textNodes = TextTruncation.getTextNodesTree(elem);
+        const textNodesArr = [];
+        let sliceLength; // in the end we will slice this amount of characters from the end of the string
+
+        let textNode;
+        while ((textNode = textNodes.nextNode())) {
+          textNodesArr.push(textNode);
+        }
+
+        (function truncate(textNodeIndex) {
+          const node = textNodesArr[textNodeIndex];
+          const nodeLen = node.length;
+
+          sliceLength = 0;
+
+          TextTruncation.selectText(range, node, nodeLen);
+
+          const rects = range.getClientRects();
+          const rectsLength = rects.length;
+
+          // use case: '<sup>foo</sup> <sup>foo</sup>'
+          // this is needed for the whitespace between to html elements
+          if (rectsLength === 0) {
+            TextTruncation.deleteNode(range, node);
+
+            if (textNodeIndex > 0) {
+              truncate.call(this, textNodeIndex - 1);
+            }
+          } else if (rects[0] && this.containerEdge < rects[0].bottom) {
+            let strEnd = nodeLen - sliceLength;
+
+            while (
+              (range.getClientRects().length &&
+                range.getClientRects()[0].bottom > this.containerEdge &&
+                range.endOffset > 0) ||
+              (range.getClientRects().length === 0 && strEnd > 0)
+            ) {
+              strEnd = nodeLen - sliceLength;
+
+              if (
+                strEnd === 0 ||
+                (strEnd === 1 && node.nodeValue.indexOf(" ") === 0) // there is a problem with strings that begin with a whitespace in FF.
+              ) {
+                TextTruncation.deleteNode(range, node);
+
+                if (textNodeIndex > 0) {
+                  truncate.call(this, textNodeIndex - 1);
+                }
+              } else {
+                TextTruncation.selectText(range, node, strEnd);
+                sliceLength++;
+              }
+            }
+          }
+        }.bind(this)(textNodesArr.length - 1));
+
+        // text is short enough now or has no more characters
+
+        const { nodeValue } = range.startContainer;
+
+        // if there is text left in the current element
+        // append the appendix
+        if (nodeValue && nodeValue.length > sliceLength) {
+          range.startContainer.nodeValue = `${nodeValue.slice(
+            0,
+            nodeValue.length - sliceLength - 4
+          )}${this.options.appendix}`;
+          // otherwise truncate the next element
+        } else {
+          iterate.call(this, elementsIndex + 1);
+        }
+      }
+
+      TextTruncation.cleanUp(elem);
+    }.bind(this)(0));
+  }
+}
+
+export default TextTruncation;

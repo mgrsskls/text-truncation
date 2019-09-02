@@ -17,7 +17,7 @@ CSS is only able to truncate text for a single line or recently also for multipl
 
 ## Installation
 
-`npm install text-truncation` or add [https://mgrsskls.github.io/text-truncation/text-truncation.js](https://mgrsskls.github.io/text-truncation/text-truncation.js) to your project if you don't want to use the ES module.
+`npm install text-truncation`
 
 ## Options:
 
