@@ -1,6 +1,6 @@
 {
   "name": "text-truncation",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Truncates the text of multiple elements based on the height of their container",
   "main": "dist/index.js",
   "scripts": {
