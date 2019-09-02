@@ -59,3 +59,7 @@ new TextTruncation(document.querySelector(".TextTruncation"), {
   className: "TextTruncation-text"
 });
 ```
+
+## Troubleshooting
+
+- Make sure that you initialize `TextTruncation` _after_ your elements have been rendered completely. Otherwise _text-truncation_ might use wrong dimensions and therefore not work.
