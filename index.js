@@ -2,7 +2,8 @@ class TextTruncation {
   constructor(element, opts = {}) {
     const defaultOptions = {
       appendix: "…",
-      className: null
+      className: null,
+      cutOffLength: 4
     };
 
     this.options = Object.assign({}, defaultOptions, opts);
@@ -155,8 +156,9 @@ class TextTruncation {
               strEnd = nodeLen - sliceLength;
 
               if (
-                strEnd === 0 ||
-                (strEnd === 1 && node.nodeValue.indexOf(" ") === 0) // there is a problem with strings that begin with a whitespace in FF.
+                strEnd === this.options.cutOffLength ||
+                (strEnd === this.options.cutOffLength + 1 &&
+                  node.nodeValue.startsWith(" ")) // there is a problem with strings that begin with a whitespace in FF.
               ) {
                 TextTruncation.deleteNode(range, node);
 
@@ -180,7 +182,7 @@ class TextTruncation {
         if (nodeValue && nodeValue.length > sliceLength) {
           range.startContainer.nodeValue = `${nodeValue.slice(
             0,
-            nodeValue.length - sliceLength - 4
+            nodeValue.length - sliceLength - this.options.cutOffLength
           )}${this.options.appendix}`;
           // otherwise truncate the next element
         } else {
