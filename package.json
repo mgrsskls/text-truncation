@@ -20,6 +20,9 @@
     "url": "https://github.com/mgrsskls/text-truncation/issues"
   },
   "homepage": "https://github.com/mgrsskls/text-truncation#readme",
+  "files": [
+    "index.js"
+  ],
   "devDependencies": {
     "@babel/core": "^7.7.5",
     "@babel/preset-env": "^7.7.6",
