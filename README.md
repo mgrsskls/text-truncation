@@ -23,6 +23,7 @@ CSS is only able to truncate text for a single line or recently also for multipl
 
 - `appendix` (default `…`): The string that is appended at the end of the truncated copy.
 - `className` (default `null`): The class name that is used to select your elements that should be truncated. If you omit it, _text-truncation_ will use the direct children of the element, which you passed as the first argument.
+- `cutOffLength` (default `4`): Defines how many characters will be removed at the end to properly append the appendix.
 
 ## Usage
 
